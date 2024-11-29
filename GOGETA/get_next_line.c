@@ -19,56 +19,67 @@ int	is_newline(char c)
 	return (0);
 }
 
-char	*ft_readline(char *buffer, int fd, int i)
+// read the line until we found a \n
+char	*ft_readline(char *storage, int fd)
 {
-	int		j;
-	char	*storage;
-
-	storage = ft_strdup("");
-	j = 0;
-	while (buffer[j] != '\n')
+	int		i;
+	char	*buffer;
+	if (!storage)
+		storage = ft_strdup("");
+	//maybe malloc buffer
+	i = 1;
+	while (i > 0)
 	{
-		j = 0;
 		i = read(fd, buffer, BUFFER_SIZE);
 		if (i == -1)
 		{
 			free(storage);
+			free(buffer);
 			return (NULL);
 		}
-		while (j < i)
-		{
-			if (!is_newline(buffer[j]))
-				j++;
-			else
-				break ;
-		}
+		buffer[i] = 0;
 		storage = ft_strjoin(storage, buffer);
+		if (ft_strchr(storage, '\n'));
+			break;
 	}
+	free (buffer)
 	return (storage);
 }
 
 char	*ft_setline(char *line)
 {
 	int	i;
+	char	*str;
 
 	i = 0;
 	while (line[i] != '\n')
 		i++;
-	line[i + 1] = 0;
-	return (line);
+	str = malloc(sizeof(char) * (i + 2));
+	while (line[i] && line[i] != '\n')
+	{
+		str[i] == line[i];
+		i++;
+	}
+	if ((line[i] && line[i] == '\n')
+		str[i + 1] == '\n';
+	str[i + 2] = 0;
+	return (str);
 }
+
+// make a function that clear storage before the \n
+// set a tmp malloc it and copy the char after the \n and end the tmp by a \0
+// return tmp
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1];
 	char		*line;
-	char		*storage;
-	int			i;
+	static char	*storage;
 
-	i = 0;
-	storage = ft_readline(buffer, fd, i);
-	line = storage;
-	line = ft_setline(line);
+	line = ft_readline(storage, fd);
+	if (!storage)
+		return (NULL);
+	line = ft_setline(storage);
+	storage = ft_clean(storage);
 	return (line);
 }
 
