@@ -6,7 +6,7 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 21:30:54 by asinsard          #+#    #+#             */
-/*   Updated: 2024/11/28 18:45:54 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/11/29 18:10:13 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,23 @@ int	ft_strlen(char *str)
 	return (len);
 }
 
-char	*ft_substr(char *s, unsigned int start, size_t len)
+char	*ft_strchr(char *s, int c)
 {
-	char	*str;
-	size_t	i;
+	int		i;
+	char	*tmp;
 
 	i = 0;
-	if (start > (size_t)ft_strlen(s))
-		return (malloc(0));
-	if (len > (size_t)ft_strlen(s + start))
-		len = ft_strlen(s + start);
-	str = malloc(len * sizeof(char) + 1);
-	if (str == NULL)
-		return (NULL);
-	while (s[start + i] && i < len)
+	tmp = s;
+	while (tmp[i])
 	{
-		str[i] = s[start + i];
-		i++;
+		if (tmp[i] == (char)c)
+			return (&tmp[i]);
+		else
+			i++;
 	}
-	str[i] = '\0';
-	return (str);
+	if (tmp[i] == (char)c)
+		return (&tmp[i]);
+	return (NULL);
 }
 
 char	*ft_strdup(char *s)
@@ -87,6 +84,5 @@ char	*ft_strjoin(char *s1, char *s2)
 		j++;
 	}
 	str[i] = '\0';
-	free(s1);
 	return (str);
 }

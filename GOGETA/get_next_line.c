@@ -6,27 +6,31 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:26:29 by asinsard          #+#    #+#             */
-/*   Updated: 2024/11/28 22:28:52 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/11/29 19:48:10 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	is_newline(char c)
+char	*ft_joinfree(char *storage, char *buffer)
 {
-	if (c == '\n')
-		return (1);
-	return (0);
+	char	*tmp;
+
+	tmp = ft_strjoin(storage, buffer);
+	free(storage);
+	return (tmp);
 }
 
-// read the line until we found a \n
 char	*ft_readline(char *storage, int fd)
 {
 	int		i;
 	char	*buffer;
+
 	if (!storage)
 		storage = ft_strdup("");
-	//maybe malloc buffer
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
 	i = 1;
 	while (i > 0)
 	{
@@ -38,72 +42,102 @@ char	*ft_readline(char *storage, int fd)
 			return (NULL);
 		}
 		buffer[i] = 0;
-		storage = ft_strjoin(storage, buffer);
-		if (ft_strchr(storage, '\n'));
-			break;
+		storage = ft_joinfree(storage, buffer);
+		if (ft_strchr(storage, '\n'))
+			break ;
 	}
-	free (buffer)
+	free (buffer);
 	return (storage);
 }
 
 char	*ft_setline(char *line)
 {
-	int	i;
+	int		i;
 	char	*str;
 
+	if (!line)
+		return (NULL);
 	i = 0;
-	while (line[i] != '\n')
+	while (line[i] && line[i] != '\n')
 		i++;
 	str = malloc(sizeof(char) * (i + 2));
+	if (!str)
+		return (NULL);
+	i = 0;
 	while (line[i] && line[i] != '\n')
 	{
-		str[i] == line[i];
+		str[i] = line[i];
 		i++;
 	}
-	if ((line[i] && line[i] == '\n')
-		str[i + 1] == '\n';
-	str[i + 2] = 0;
+	if ((line[i] && line[i] == '\n'))
+	{
+		str[i] = '\n';
+		i++;
+	}
+	str[i] = '\0';
 	return (str);
 }
 
-// make a function that clear storage before the \n
-// set a tmp malloc it and copy the char after the \n and end the tmp by a \0
-// return tmp
+char	*ft_clean(char *storage)
+{
+	char	*tmp;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	while (storage[i] && storage[i] != '\n')
+		i++;
+	tmp = malloc(sizeof(char) * ((ft_strlen(storage) - i) + 1));
+	if (!tmp)
+		return (NULL);
+	while (storage[i])
+	{
+		i++;
+		tmp[j] = storage[i];
+		j++;
+	}
+	tmp[j] = '\0';
+	free (storage);
+	return (tmp);
+}
 
 char	*get_next_line(int fd)
 {
 	char		*line;
 	static char	*storage;
 
-	line = ft_readline(storage, fd);
-	if (!storage)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &storage, 0) < 0)
+		return (NULL);
+	storage = ft_readline(storage, fd);
+	if (storage[0] == '\0' || !storage)
 		return (NULL);
 	line = ft_setline(storage);
 	storage = ft_clean(storage);
 	return (line);
 }
 
-int	main(void)
+/* int	main(void)
 {
 	int		fd;
 	char	*line;
 	char	*line2;
 	char	*line3;
-	/* char	*line4;
-	char	*line5;
-	char	*line6; */
+	// char	*line4;
+	// char	*line5;
+	// char	*line6;
 	
 	fd = open("txt.txt", O_RDONLY);
 	line = get_next_line(fd);
-	line2 = get_next_line(fd);
-	line3 = get_next_line(fd);
-/* 	line4 = get_next_line(fd);
-	line5 = get_next_line(fd);
-	line6 = get_next_line(fd); */
+	// line2 = get_next_line(fd);
+	// line3 = get_next_line(fd);
+	// line4 = get_next_line(fd);
+	// line5 = get_next_line(fd);
+	// line6 = get_next_line(fd);
 	close(fd);
 	printf("%s%s%s", line, line2, line3);
 	free(line);
 	free(line2);
 	free(line3);
 	return (0);
-}
+} */
