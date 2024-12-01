@@ -25,7 +25,7 @@ char	*ft_clean(char *storage);
 char	*ft_setline(char *line);
 char	*ft_readline(char *storage, int fd);
 int		ft_strlen(char *str);
-char	*ft_strchr(char *s, int c);
+char	*ft_isnewline(char *s);
 char	*ft_strdup(char *s);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_joinfree(char *storage, char *buffer);
