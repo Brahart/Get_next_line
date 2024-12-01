@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: abrahamsinsard <abrahamsinsard@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:26:29 by asinsard          #+#    #+#             */
-/*   Updated: 2024/11/29 19:48:10 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/01 12:22:56 by abrahamsins      ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ char	*ft_readline(char *storage, int fd)
 	while (i > 0)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
-		if (i == -1 || i == 0 && storage[0] == '\0')
+		// if (i == -1 || (i == 0 && storage[0] == '\0'))
+		if (i == -1)
 		{
 			free(storage);
 			free(buffer);
