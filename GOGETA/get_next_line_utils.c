@@ -22,7 +22,7 @@ int	ft_strlen(char *str)
 	return (len);
 }
 
-char	*ft_strchr(char *s, int c)
+char	*ft_isnewline(char *s)
 {
 	int		i;
 	char	*tmp;
@@ -31,13 +31,11 @@ char	*ft_strchr(char *s, int c)
 	tmp = s;
 	while (tmp[i])
 	{
-		if (tmp[i] == (char)c)
+		if (tmp[i] == '\n')
 			return (&tmp[i]);
 		else
 			i++;
 	}
-	if (tmp[i] == (char)c)
-		return (&tmp[i]);
 	return (NULL);
 }
 
