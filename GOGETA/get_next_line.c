@@ -35,7 +35,7 @@ char	*ft_readline(char *storage, int fd)
 	while (i > 0)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
-		if (i == -1)
+		if (i == -1 || i == 0 && storage[0] == '\0')
 		{
 			free(storage);
 			free(buffer);
@@ -43,7 +43,7 @@ char	*ft_readline(char *storage, int fd)
 		}
 		buffer[i] = 0;
 		storage = ft_joinfree(storage, buffer);
-		if (ft_strchr(storage, '\n'))
+		if (ft_isnewline(storage))
 			break ;
 	}
 	free (buffer);
