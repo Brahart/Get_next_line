@@ -12,57 +12,43 @@
 
 #include "get_next_line.h"
 
-char	*ft_readline(char *storage, int fd)
+char	*ft_readline(char *storage, char *buffer, int fd)
 {
 	int		i;
-	char	*buffer;
+	char	*tmp;
 
-	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buffer)
-		return (NULL);
 	i = 1;
 	while (i > 0)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
-		if (i == -1 || i == 0)
+		if (i == -1)
 		{
 			free(buffer);
 			return (NULL);
 		}
+		if (i == 0)
+			break ;
 		buffer[i] = 0;
-		storage = ft_strjoin(storage, buffer);
-		if (buffer && ft_isnewline(storage))
+		tmp = storage;
+		storage = ft_strjoin(tmp, buffer);
+		if (ft_isnewline(storage))
 			break ;
 	}
-	free (buffer);
 	return (storage);
 }
 
 char	*ft_setline(char *line)
 {
 	int		i;
-	char	*str;
+	char	*tmp;
 
-	if (!line)
-		return (NULL);
 	i = 0;
 	while (line[i] && line[i] != '\n')
 		i++;
-	str = malloc(sizeof(char) * (i + 2));
+	str = ft_substr(line, i + 1, (ft_strlen(line) - i));
 	if (!str)
 		return (NULL);
-	i = 0;
-	while (line[i] && line[i] != '\n')
-	{
-		str[i] = line[i];
-		i++;
-	}
-	if ((line[i] && line[i] == '\n'))
-	{
-		str[i] = '\n';
-		i++;
-	}
-	str[i] = '\0';
+	str[i + 1] = '/0';
 	return (str);
 }
 
@@ -93,14 +79,20 @@ char	*ft_clean(char *storage)
 char	*get_next_line(int fd)
 {
 	char		*line;
+	char		*buffer;
 	static char	*storage;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	storage = ft_readline(storage, fd);
-	if (!storage || storage[0] == '\0')
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
 		return (NULL);
-	line = ft_setline(storage);
+	line = ft_readline(storage, buffer fd);
+	free(buffer);
+	buffer = NULL;
+	if (!storage)
+		return (NULL);
+	storage = ft_setline(line);
 	storage = ft_clean(storage);
 	return (line);
 }
