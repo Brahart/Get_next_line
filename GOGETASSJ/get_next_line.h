@@ -6,7 +6,7 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:50 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/02 16:10:20 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/02 19:37:06 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,12 @@
 char	*get_next_line(int fd);
 char	*ft_clean(char *storage);
 char	*ft_setline(char *line);
-char	*ft_readline(char *storage, int fd);
+char	*ft_readline(int fd, char *storage);
 int		ft_strlen(char *str);
 char	*ft_isnewline(char *s);
-char	*ft_strdup(char *s);
+char	*ft_move(char *dest, char *src, int len);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_joinfree(char *storage, char *buffer);
+int		ft_numnewline(char *str);
 
 #endif

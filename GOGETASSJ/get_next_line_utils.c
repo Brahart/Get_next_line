@@ -6,11 +6,25 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 21:30:54 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/02 18:34:01 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/02 20:33:32 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+int	ft_numnewline(char *str)
+{
+	int	len;
+
+	len = 0;
+	while (str[len])
+	{
+		if (str[len] == '\n')
+			return (len + 1);
+		len++;
+	}
+	return (0);
+}
 
 int	ft_strlen(char *str)
 {
@@ -24,41 +38,18 @@ int	ft_strlen(char *str)
 	return (len);
 }
 
-char	*ft_isnewline(char *s)
+char	*ft_move(char *dest, char *src, int len)
 {
-	int		i;
-	char	*tmp;
+	int	i;
 
 	i = 0;
-	tmp = s;
-	while (tmp[i])
-	{
-		if (tmp[i] == '\n')
-			return (&tmp[i]);
-		else
-			i++;
-	}
-	return (NULL);
-}
-
-char	*ft_strdup(char *s)
-{
-	char	*str;
-	size_t	i;
-	size_t	len;
-
-	i = 0;
-	len = ft_strlen(s);
-	str = malloc(sizeof(char) * len + 1);
-	if (str == NULL)
-		return (NULL);
 	while (i < len)
 	{
-		str[i] = s[i];
+		dest[i] = src[i];
 		i++;
 	}
-	str[i] = '\0';
-	return (str);
+	dest[i] = '\0';
+	return (dest);
 }
 
 char	*ft_strjoin(char *s1, char *s2)
@@ -71,7 +62,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	j = 0;
 	str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2)) + 1);
 	if (!str)
-		return (free(s1), NULL);
+		return (NULL);
 	while (s1 && s1[i])
 	{
 		str[i] = s1[i];
