@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: abrahamsinsard <abrahamsinsard@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:50 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/02 19:37:06 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/03 00:21:58 by abrahamsins      ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 # include <stdio.h>
 
 char	*get_next_line(int fd);
-char	*ft_clean(char *storage);
-char	*ft_setline(char *line);
-char	*ft_readline(int fd, char *storage);
+char	*ft_clean(char *storage, char *line);
+char	*ft_setline(char *storage);
+char	*ft_readline(char *storage, int fd);
 int		ft_strlen(char *str);
 char	*ft_isnewline(char *s);
 char	*ft_move(char *dest, char *src, int len);

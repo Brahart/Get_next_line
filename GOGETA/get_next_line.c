@@ -3,52 +3,66 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: abrahamsinsard <abrahamsinsard@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:26:29 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/02 18:51:38 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/02 23:56:17 by abrahamsins      ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_readline(char *storage, char *buffer, int fd)
+char	*ft_readline(char *storage, int fd)
 {
 	int		i;
-	char	*tmp;
+	char	*buffer;
 
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
 	i = 1;
 	while (i > 0)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
-		if (i == -1)
+		if (i == -1 || i == 0)
 		{
 			free(buffer);
 			return (NULL);
 		}
-		if (i == 0)
-			break ;
 		buffer[i] = 0;
-		tmp = storage;
-		storage = ft_strjoin(tmp, buffer);
-		if (ft_isnewline(storage))
+		storage = ft_strjoin(storage, buffer);
+		if (buffer && ft_isnewline(storage))
 			break ;
 	}
+	free (buffer);
 	return (storage);
 }
 
 char	*ft_setline(char *line)
 {
 	int		i;
-	char	*tmp;
+	char	*str;
 
+	if (!line)
+		return (NULL);
 	i = 0;
 	while (line[i] && line[i] != '\n')
 		i++;
-	str = ft_substr(line, i + 1, (ft_strlen(line) - i));
+	str = malloc(sizeof(char) * (i + 2));
 	if (!str)
 		return (NULL);
-	str[i + 1] = '/0';
+	i = 0;
+	while (line[i] && line[i] != '\n')
+	{
+		str[i] = line[i];
+		i++;
+	}
+	if ((line[i] && line[i] == '\n'))
+	{
+		str[i] = '\n';
+		i++;
+	}
+	str[i] = '\0';
 	return (str);
 }
 
@@ -79,23 +93,18 @@ char	*ft_clean(char *storage)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	char		*buffer;
 	static char	*storage;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buffer)
+	storage = ft_readline(storage, fd);
+	if (!storage || storage[0] == '\0')
 		return (NULL);
-	line = ft_readline(storage, buffer fd);
-	free(buffer);
-	buffer = NULL;
-	if (!storage)
-		return (NULL);
-	storage = ft_setline(line);
+	line = ft_setline(storage);
 	storage = ft_clean(storage);
 	return (line);
 }
+
 
 int	main(void)
 {

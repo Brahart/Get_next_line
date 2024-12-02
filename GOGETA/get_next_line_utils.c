@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: abrahamsinsard <abrahamsinsard@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 21:30:54 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/02 18:34:01 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/03 00:23:20 by abrahamsins      ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,5 +85,27 @@ char	*ft_strjoin(char *s1, char *s2)
 	}
 	str[i] = '\0';
 	free(s1);
+	return (str);
+}
+
+char	*ft_substr(char *s, int start, int len)
+{
+	char	*str;
+	int		i;
+
+	i = 0;
+	if (start > ft_strlen(s))
+		return (malloc(0));
+	if (len > ft_strlen(s + start))
+		len = ft_strlen(s + start);
+	str = malloc((len + 1) * sizeof(char));
+	if (str == NULL)
+		return (NULL);
+	while (s[start + i] && i < len)
+	{
+		str[i] = s[start + i];
+		i++;
+	}
+	str[i] = '\0';
 	return (str);
 }

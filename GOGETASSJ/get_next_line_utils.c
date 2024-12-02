@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: abrahamsinsard <abrahamsinsard@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 21:30:54 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/02 20:33:32 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/03 00:23:06 by abrahamsins      ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,20 @@ int	ft_strlen(char *str)
 	return (len);
 }
 
-char	*ft_move(char *dest, char *src, int len)
+char	*ft_isnewline(char *s)
 {
-	int	i;
+	int		i;
 
 	i = 0;
-	while (i < len)
+	if (!s)
+		return (NULL);
+	while (s[i])
 	{
-		dest[i] = src[i];
+		if (s[i] == '\n')
+			return (&s[i]);
 		i++;
 	}
-	dest[i] = '\0';
-	return (dest);
+	return (NULL);
 }
 
 char	*ft_strjoin(char *s1, char *s2)
