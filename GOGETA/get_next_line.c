@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abrahamsinsard <abrahamsinsard@student.    +#+  +:+       +#+        */
+/*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:26:29 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/02 23:56:17 by abrahamsins      ###   ########lyon.fr   */
+/*   Updated: 2024/12/03 12:27:03 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,14 +99,14 @@ char	*get_next_line(int fd)
 		return (NULL);
 	storage = ft_readline(storage, fd);
 	if (!storage || storage[0] == '\0')
-		return (NULL);
+		return (free(storage), NULL);
 	line = ft_setline(storage);
 	storage = ft_clean(storage);
 	return (line);
 }
 
 
-int	main(void)
+/* int	main(void)
 {
 	int		fd;
 	char	*line;
@@ -129,4 +129,4 @@ int	main(void)
 	free(line2);
 	free(line3);
 	return (0);
-}
+} */

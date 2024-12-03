@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abrahamsinsard <abrahamsinsard@student.    +#+  +:+       +#+        */
+/*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 21:30:54 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/03 00:23:20 by abrahamsins      ###   ########lyon.fr   */
+/*   Updated: 2024/12/03 12:33:48 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,12 @@ int	ft_strlen(char *str)
 char	*ft_isnewline(char *s)
 {
 	int		i;
-	char	*tmp;
 
 	i = 0;
-	tmp = s;
-	while (tmp[i])
+	while (s[i])
 	{
-		if (tmp[i] == '\n')
-			return (&tmp[i]);
+		if (s[i] == '\n')
+			return (&s[i]);
 		else
 			i++;
 	}
