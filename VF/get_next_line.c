@@ -6,45 +6,62 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:26:29 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/04 11:44:25 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/04 19:05:47 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_joinfree(char *storage, char *buffer)
+char	*ft_bzero(char *str, int i)
 {
-	char	*tmp;
-
-	tmp = ft_strjoin(storage, buffer);
-	free(storage);
-	return (tmp);
+	while (str[i])
+	{
+		str[i] = '\0';
+		i++;
+	}
+	return (str);
 }
 
 char	*ft_readline(char *buffer, int fd)
 {
 	char	*storage;
 	int		i;
-	
-	if (!buffer[0])
-		i = read(fd, buffer, BUFFER_SIZE);
-	else
-		i = 1;
+
+	i = 1;
 	storage = ft_strdup("");
-	while (i > 0)
+	while (!ft_isnewline(storage) && i != 0)
 	{
-		if (buffer[0] == '\0' && i == 0)
-			return (free(storage), NULL);
-		if (buffer[0] && i > 0)
-			buffer[i] = '\0';
-		storage = ft_joinfree(storage, buffer);
-		if ((storage && ft_isnewline(storage)) || (storage[1] == '\0' && i > 1))
-		{
-			buffer = ft_memmove(buffer, storage);
-			break ;
-		}
 		i = read(fd, buffer, BUFFER_SIZE);
+		if ((buffer[0] == '\0' && i == 0) || (i == -1))
+			return (ft_bzero(buffer, 0), free(storage), NULL);
+		buffer[i] = '\0';
+		storage = ft_strjoin(storage, buffer);
+		if ((storage && ft_isnewline(storage)) || (storage[1] == '\0' && i > 1))
+			break ;
 	}
+	buffer = ft_memmove(buffer, storage);
+	return (storage);
+}
+
+char	*ft_readline2(char *buffer, int fd)
+{
+	char	*storage;
+	int		i;
+
+	i = 1;
+	storage = ft_strdup(buffer);
+	while (!ft_isnewline(storage) && i != 0)
+	{
+		i = read(fd, buffer, BUFFER_SIZE);
+		if ((buffer[0] == '\0' && i == 0) || (i == -1))
+			return (ft_bzero(buffer, 0), free(storage), NULL);
+		if (i < BUFFER_SIZE)
+			buffer = ft_bzero(buffer, i);
+		storage = ft_strjoin(storage, buffer);
+		if ((storage && ft_isnewline(storage)) || (storage[1] == '\0'))
+			break ;
+	}
+	buffer = ft_memmove(buffer, storage);
 	return (storage);
 }
 
@@ -77,12 +94,15 @@ char	*ft_setline(char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1];
+	static char	buffer[BUFFER_SIZE + 1] = {0};
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &buffer, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = ft_readline(buffer, fd);
+	if (!buffer[0])
+		line = ft_readline(buffer, fd);
+	else
+		line = ft_readline2(buffer, fd);
 	if (!line || line[0] == '\0')
 		return (free(line), NULL);
 	line = ft_setline(line);
@@ -93,23 +113,33 @@ char	*get_next_line(int fd)
 {
 	int		fd;
 	char	*line;
-	char	*line2;
-	char	*line3;
-	// char	*line4;
-	// char	*line5;
-	// char	*line6;
+
 	
 	fd = open("txt.txt", O_RDONLY);
 	line = get_next_line(fd);
-	line2 = get_next_line(fd);
-	line3 = get_next_line(fd);
-	// line4 = get_next_line(fd);
-	// line5 = get_next_line(fd);
-	// line6 = get_next_line(fd);
-	close(fd);
-	printf("%s%s%s", line, line2, line3);
+	printf("%s", line);
 	free(line);
-	free(line2);
-	free(line3);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+	// line = get_next_line(fd);
+	// printf("%s", line);
+	// free(line);
+	close(fd);
 	return (0);
 } */
