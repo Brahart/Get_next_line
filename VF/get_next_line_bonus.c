@@ -6,7 +6,7 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:26:29 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/04 19:20:46 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/05 12:58:29 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,10 +94,10 @@ char	*ft_setline(char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[FD_MAX][BUFFER_SIZE + 1] = {0};
+	static char	buffer[FD_MAX + 1][BUFFER_SIZE + 1];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd > FD_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!buffer[fd][0])
 		line = ft_readline(buffer[fd], fd);
@@ -109,7 +109,9 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/* int	main(void)
+/* #include <fcntl.h>
+#include <stdio.h>
+int	main(void)
 {
 	int		fd;
 	char	*line;
