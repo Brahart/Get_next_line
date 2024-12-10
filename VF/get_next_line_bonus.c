@@ -6,7 +6,7 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:26:29 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/05 12:58:29 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/10 17:38:26 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,15 @@ char	*ft_bzero(char *str, int i)
 	return (str);
 }
 
-char	*ft_readline(char *buffer, int fd)
+char	*ft_read_buf_is_empty(char *buffer, int fd)
 {
 	char	*storage;
 	int		i;
 
 	i = 1;
-	storage = ft_strdup("");
+	storage = ft_strdup(buffer);
+	if (!storage)
+		return (NULL);
 	while (!ft_isnewline(storage) && i != 0)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
@@ -36,6 +38,8 @@ char	*ft_readline(char *buffer, int fd)
 			return (ft_bzero(buffer, 0), free(storage), NULL);
 		buffer[i] = '\0';
 		storage = ft_strjoin(storage, buffer);
+		if (!storage)
+			return (free(storage), NULL);
 		if ((storage && ft_isnewline(storage)) || (storage[1] == '\0' && i > 1))
 			break ;
 	}
@@ -43,13 +47,15 @@ char	*ft_readline(char *buffer, int fd)
 	return (storage);
 }
 
-char	*ft_readline2(char *buffer, int fd)
+char	*ft_read_buf_is_full(char *buffer, int fd)
 {
 	char	*storage;
 	int		i;
 
 	i = 1;
 	storage = ft_strdup(buffer);
+	if (!storage)
+		return (NULL);
 	while (!ft_isnewline(storage) && i != 0)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
@@ -58,6 +64,8 @@ char	*ft_readline2(char *buffer, int fd)
 		if (i < BUFFER_SIZE)
 			buffer = ft_bzero(buffer, i);
 		storage = ft_strjoin(storage, buffer);
+		if (!storage)
+			return (free(storage), NULL);
 		if ((storage && ft_isnewline(storage)) || (storage[1] == '\0'))
 			break ;
 	}
@@ -100,48 +108,31 @@ char	*get_next_line(int fd)
 	if (fd < 0 || fd > FD_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!buffer[fd][0])
-		line = ft_readline(buffer[fd], fd);
+		line = ft_read_buf_is_empty(buffer[fd], fd);
 	else
-		line = ft_readline2(buffer[fd], fd);
+		line = ft_read_buf_is_full(buffer[fd], fd);
 	if (!line || line[0] == '\0')
 		return (free(line), NULL);
 	line = ft_setline(line);
 	return (line);
 }
 
-/* #include <fcntl.h>
+#include <fcntl.h>
 #include <stdio.h>
-int	main(void)
-{
-	int		fd;
-	char	*line;
 
+int main(void)
+{
+	int	fd = open("txt", O_RDONLY);
+	char	*buffer;
+	int fd2;
 	
-	fd = open("txt.txt", O_RDONLY);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	// line = get_next_line(fd);
-	// printf("%s", line);
-	// free(line);
+	buffer = get_next_line(fd);
+	printf("%s", buffer);
+	free(buffer);
+	fd2 = open("txt2", O_RDONLY);
+	buffer = get_next_line(fd2);
+	printf("%s", buffer);
+	free(buffer);
 	close(fd);
-	return (0);
-} */
+	return(0);
+}

@@ -6,7 +6,7 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:26:29 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/04 19:05:47 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/10 17:54:27 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,15 @@ char	*ft_bzero(char *str, int i)
 	return (str);
 }
 
-char	*ft_readline(char *buffer, int fd)
+char	*ft_read_buf_is_empty(char *buffer, int fd)
 {
 	char	*storage;
 	int		i;
 
 	i = 1;
-	storage = ft_strdup("");
+	storage = ft_strdup(buffer);
+	if (!storage)
+		return (NULL);
 	while (!ft_isnewline(storage) && i != 0)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
@@ -36,6 +38,8 @@ char	*ft_readline(char *buffer, int fd)
 			return (ft_bzero(buffer, 0), free(storage), NULL);
 		buffer[i] = '\0';
 		storage = ft_strjoin(storage, buffer);
+		if (!storage)
+			return (NULL);
 		if ((storage && ft_isnewline(storage)) || (storage[1] == '\0' && i > 1))
 			break ;
 	}
@@ -43,13 +47,15 @@ char	*ft_readline(char *buffer, int fd)
 	return (storage);
 }
 
-char	*ft_readline2(char *buffer, int fd)
+char	*ft_read_buf_is_full(char *buffer, int fd)
 {
 	char	*storage;
 	int		i;
 
 	i = 1;
 	storage = ft_strdup(buffer);
+	if (!storage)
+		return (NULL);
 	while (!ft_isnewline(storage) && i != 0)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
@@ -58,6 +64,8 @@ char	*ft_readline2(char *buffer, int fd)
 		if (i < BUFFER_SIZE)
 			buffer = ft_bzero(buffer, i);
 		storage = ft_strjoin(storage, buffer);
+		if (!storage)
+			return (NULL);
 		if ((storage && ft_isnewline(storage)) || (storage[1] == '\0'))
 			break ;
 	}
@@ -75,7 +83,7 @@ char	*ft_setline(char *line)
 		i++;
 	str = malloc(sizeof(char) * (i + 2));
 	if (!str)
-		return (NULL);
+		return (free(line), NULL);
 	i = 0;
 	while (line[i] && line[i] != '\n')
 	{
@@ -96,50 +104,44 @@ char	*get_next_line(int fd)
 {
 	static char	buffer[BUFFER_SIZE + 1] = {0};
 	char		*line;
+	static int	fd_verif = -1;
 
+	if (fd != fd_verif)
+		buffer[0] = 0;
+	fd_verif = fd;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!buffer[0])
-		line = ft_readline(buffer, fd);
+		line = ft_read_buf_is_empty(buffer, fd);
 	else
-		line = ft_readline2(buffer, fd);
+		line = ft_read_buf_is_full(buffer, fd);
 	if (!line || line[0] == '\0')
 		return (free(line), NULL);
 	line = ft_setline(line);
 	return (line);
 }
 
-/* int	main(void)
-{
-	int		fd;
-	char	*line;
+#include <fcntl.h>
+#include <stdio.h>
 
-	
-	fd = open("txt.txt", O_RDONLY);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
-	// line = get_next_line(fd);
-	// printf("%s", line);
-	// free(line);
-	close(fd);
-	return (0);
-} */
+
+int main(void)
+{
+	int	fd = open("txt", O_RDONLY);
+	char	*buffer;
+	char	*buffer2;
+	int fd2;
+
+	buffer = get_next_line(fd);
+	printf("%d", fd);
+	printf("\n%s", buffer);
+	free(buffer);
+	fd2 = open("txt2", O_RDONLY);
+	buffer2 = get_next_line(fd2);
+	printf("%s", buffer2);
+	printf("%d", fd2);
+	free(buffer2);
+	close (fd);
+	close(fd2);
+	return(0);
+}

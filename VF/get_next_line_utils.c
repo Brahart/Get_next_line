@@ -6,7 +6,7 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 21:30:54 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/04 17:14:42 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/05 15:24:16 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,29 +90,29 @@ char	*ft_strjoin(char *s1, char *s2)
 
 char	*ft_memmove(char *buffer, char *storage)
 {
-	char	*tmp1;
-	char	*tmp2;
+	char	*tmp_storage;
+	char	*tmp_buffer;
 	int		i;
 	int		j;
 
-	tmp1 = storage;
-	tmp2 = buffer;
+	tmp_storage = storage;
+	tmp_buffer = buffer;
 	i = 0;
 	j = 0;
-	while (tmp1[i] && tmp1[i] != '\n')
+	while (tmp_storage[i] && tmp_storage[i] != '\n')
 		i++;
-	if (tmp1[i] == '\n')
+	if (tmp_storage[i] == '\n')
 		i += 1;
-	while (tmp1[i])
+	while (tmp_storage[i])
 	{
-		tmp2[j] = tmp1[i];
+		tmp_buffer[j] = tmp_storage[i];
 		j++;
 		i++;
 	}
 	while (j < BUFFER_SIZE + 1)
 	{
-		tmp2[j] = '\0';
+		tmp_buffer[j] = '\0';
 		j++;
 	}
-	return (tmp2);
+	return (tmp_buffer);
 }
