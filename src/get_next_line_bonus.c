@@ -6,7 +6,7 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:26:29 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/11 20:23:59 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2024/12/11 20:45:55 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,30 +116,4 @@ char	*get_next_line(int fd)
 		return (free(line), NULL);
 	line = ft_setline(line);
 	return (line);
-}
-
-#include <fcntl.h>
-#include <stdio.h>
-int	main(void)
-{
-	char	*line;
-	int		fd;
-	int		i;
-
-	i = 1;
-	fd = open("txt.txt", O_RDONLY);
-	line = get_next_line(fd);
-	printf("line %i: %s", i, line);
-	i++;
-	free(line);
-	while(line)
-	{
-		line = get_next_line(fd);
-		printf("line %i: %s", i, line);
-		free(line);
-		i++;
-	}
-	free(line);
-	close(fd);
-	return(0);
 }
