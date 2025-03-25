@@ -6,11 +6,12 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 21:30:54 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/11 20:46:36 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2025/03/26 00:00:36 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/get_next_line_bonus.h"
+#include <stdlib.h>
 
 int	ft_strlen(char *str)
 {
@@ -59,7 +60,7 @@ char	*ft_strdup(char *line)
 	return (res);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin_and_free(char *s1, char *s2)
 {
 	char	*res;
 	int		i;
@@ -104,4 +105,21 @@ void	ft_memmove(char *buffer, char *storage)
 		i++;
 	}
 	ft_bzero(buffer, j);
+}
+
+char	*copy_and_backspace(char *line, char *str, int i)
+{
+	while (line[i] && line[i] != '\n')
+	{
+		str[i] = line[i];
+		i++;
+	}
+	if ((line[i] && line[i] == '\n'))
+	{
+		str[i] = '\n';
+		i++;
+	}
+	str[i] = '\0';
+	free(line);
+	return (str);
 }

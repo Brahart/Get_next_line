@@ -6,11 +6,13 @@
 /*   By: asinsard <asinsard@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:26:29 by asinsard          #+#    #+#             */
-/*   Updated: 2024/12/11 20:45:55 by asinsard         ###   ########lyon.fr   */
+/*   Updated: 2025/03/26 00:00:12 by asinsard         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/get_next_line_bonus.h"
+#include <stdlib.h>
+#include <unistd.h>
 
 char	*ft_bzero(char *str, int i)
 {
@@ -22,24 +24,24 @@ char	*ft_bzero(char *str, int i)
 	return (str);
 }
 
-char	*ft_read_buf_is_empty(char *buffer, int fd)
+char	*buf_is_empty(char *buffer, char *storage, int fd, int read_size)
 {
-	char	*storage;
-	int		read_size;
-
-	read_size = 1;
-	storage = ft_strdup(buffer);
-	if (!storage)
-		return (NULL);
 	while (!ft_isnewline(storage) && read_size != 0)
 	{
 		read_size = read(fd, buffer, BUFFER_SIZE);
 		if ((buffer[0] == '\0' && read_size == 0) || (read_size == -1))
-			return (ft_bzero(buffer, 0), free(storage), NULL);
+		{
+			ft_bzero(buffer, 0);
+			free(storage);
+			return (NULL);
+		}
 		buffer[read_size] = '\0';
-		storage = ft_strjoin(storage, buffer);
+		storage = ft_strjoin_and_free(storage, buffer);
 		if (!storage)
-			return (free(storage), NULL);
+		{
+			free(storage);
+			return (NULL);
+		}
 		if ((storage && ft_isnewline(storage))
 			|| (storage[1] == '\0' && read_size > 1))
 			break ;
@@ -48,25 +50,25 @@ char	*ft_read_buf_is_empty(char *buffer, int fd)
 	return (storage);
 }
 
-char	*ft_read_buf_is_full(char *buffer, int fd)
+char	*buf_is_full(char *buffer, char *storage, int fd, int read_size)
 {
-	char	*storage;
-	int		read_size;
-
-	read_size = 1;
-	storage = ft_strdup(buffer);
-	if (!storage)
-		return (NULL);
 	while (!ft_isnewline(storage) && read_size != 0)
 	{
 		read_size = read(fd, buffer, BUFFER_SIZE);
 		if ((buffer[0] == '\0' && read_size == 0) || (read_size == -1))
-			return (ft_bzero(buffer, 0), free(storage), NULL);
+		{
+			ft_bzero(buffer, 0);
+			free(storage);
+			return (NULL);
+		}
 		if (read_size < BUFFER_SIZE)
 			buffer = ft_bzero(buffer, read_size);
-		storage = ft_strjoin(storage, buffer);
+		storage = ft_strjoin_and_free(storage, buffer);
 		if (!storage)
-			return (free(storage), NULL);
+		{
+			free(storage);
+			return (NULL);
+		}
 		if ((storage && ft_isnewline(storage)) || (storage[1] == '\0'))
 			break ;
 	}
@@ -84,20 +86,12 @@ char	*ft_setline(char *line)
 		i++;
 	str = malloc(sizeof(char) * (i + 2));
 	if (!str)
-		return (free(line), NULL);
+	{
+		free(line);
+		return (NULL);
+	}
 	i = 0;
-	while (line[i] && line[i] != '\n')
-	{
-		str[i] = line[i];
-		i++;
-	}
-	if ((line[i] && line[i] == '\n'))
-	{
-		str[i] = '\n';
-		i++;
-	}
-	str[i] = '\0';
-	free(line);
+	str = copy_and_backspace(line, str, i);
 	return (str);
 }
 
@@ -105,15 +99,24 @@ char	*get_next_line(int fd)
 {
 	static char	buffer[FD_MAX + 1][BUFFER_SIZE + 1];
 	char		*line;
+	char		*storage;
+	int			read_size;
 
+	read_size = 1;
+	storage = ft_strdup(buffer[fd]);
+	if (!storage)
+		return (NULL);
 	if (fd < 0 || fd > FD_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!buffer[fd][0])
-		line = ft_read_buf_is_empty(buffer[fd], fd);
+		line = buf_is_empty(buffer[fd], storage, fd, read_size);
 	else
-		line = ft_read_buf_is_full(buffer[fd], fd);
+		line = buf_is_full(buffer[fd], storage, fd, read_size);
 	if (!line || line[0] == '\0')
-		return (free(line), NULL);
+	{
+		free(line);
+		return (NULL);
+	}
 	line = ft_setline(line);
 	return (line);
 }
